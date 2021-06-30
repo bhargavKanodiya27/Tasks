@@ -8,6 +8,9 @@ const User = seuelize.define('users', {
     allowNull: false,
     primaryKey: true,
   },
+  isAdmin: {
+    type: Sequelize.BOOLEAN,
+  },
   socialId: {
     type: Sequelize.STRING,
     allowNull: true,

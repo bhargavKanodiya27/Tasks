@@ -23,6 +23,7 @@ const addUser = async (req, res, next) => {
         age,
         password,
         profilePhoto,
+        isAdmin=false,
       });
     } catch (err) {
       return res.send(err.details[0].message);
@@ -172,7 +173,34 @@ const getUser = async (req, res, next) => {
 const searchUser = async (req, res, next) => {
   try {
     let name = req.params.name;
-    var users = await User.findAll({ name });
+    var users = await User.findAll({ name ,isAdmin:false});
+    if (users) {
+      var sendData = {
+        data: users,
+        is_error: false,
+      };
+      return rea.status(200).send(sendData);
+    } else if (users.length === 0 || users === null) {
+      var sendData = {
+        message: 'no data found',
+        is_error: false,
+      };
+      return rea.status(404).send(sendData);
+    }
+  } catch (err) {
+    if (err) {
+      var error = {
+        is_error: true,
+        message: err.message,
+      };
+      return res.status(500).send(error);
+    }
+  }
+};
+const searchAdmin = async (req, res, next) => {
+  try {
+    let name = req.params.name;
+    var users = await User.findAll({ name ,isAdmin:true});
     if (users) {
       var sendData = {
         data: users,
@@ -278,6 +306,8 @@ const userSocialSignUp = async (req, res, next) => {
   try {
     let email = req.body.email;
     let socialId = req.body.socialId;
+    let name = req.body.name;
+    let age = req.body.age;
     try {
       const val_check = await validator.validateAsync({ email });
     } catch (err) {
@@ -291,7 +321,7 @@ const userSocialSignUp = async (req, res, next) => {
       };
       return res.status(500).send(error);
     } else {
-      var user = User.create({ email, name, age, password, socialId });
+      var user = User.create({ email, name, age,socialId,isAdmin: true});
       if (user) {
         var finaldata = {
           is_error: false,
@@ -319,4 +349,5 @@ module.exports = {
   userSocialLogin,
   userSocialSignUp,
   searchUser,
+  searchAdmin
 };

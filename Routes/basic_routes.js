@@ -10,6 +10,7 @@ const {
   userSocialLogin,
   userSocialSignUp,
   searchUser,
+  searchAdmin,
 } = require('../controller/user_controller');
 const showError = require('../controller/Error');
 
@@ -21,5 +22,6 @@ router.post('/updateUser', updateUser); // updating values of user in database
 router.post('/deleteUser', deleteUser); //deleting user's instance from database
 router.get('/getUser/:sort', getUser); //fatch all users data from database by order
 router.get('/search/:name', searchUser); //search any user by his/her name
+router.get('/searchadmin/:name', searchAdmin); //search any admin by his/her name
 router.get('*', showError);
 module.exports = router;
